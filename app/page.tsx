@@ -7,7 +7,16 @@ export default function Home() {
   const [assistantResponse, setAssistantResponse] = useState("")
 
   async function askChat() {
-
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(userInput)
+    }).then(async (res) => {
+      console.log(res)
+      if (res.status === 200) {
+        setAssistantResponse(await res.json())
+      }
+    })
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {

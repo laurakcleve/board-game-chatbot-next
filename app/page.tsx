@@ -27,12 +27,12 @@ export default function Home() {
   return (
     <div className="py-24">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-2xl lg:text-center">
+        <div className="mx-auto max-w-2xl">
           <h1 className="mt-2 mb-4 text-3xl font-bold tracking-tight">
             Nemesis Chat
           </h1>
 
-          <form onSubmit={handleSubmit} className="flex">
+          <form onSubmit={handleSubmit} className="flex my-8">
             <input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} className="px-4 py-3 flex-1 rounded-md bg-transparent border-solid border-2 border-teal-400 outline-none" />
 
             <button type="submit">
@@ -41,7 +41,9 @@ export default function Home() {
               </svg>
             </button>
           </form>
-          <p>{assistantResponse}</p>
+
+          <div className="whitespace-pre-line prose prose-invert">{assistantResponse}</div>
+
         </div>
       </div>
     </div>

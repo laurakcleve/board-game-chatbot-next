@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Modal from 'react-modal'
 import arrowsIcon from '../public/arrows.svg'
 import AutoResizeTextarea from './components/AutoResizeTextarea'
 
@@ -9,6 +10,15 @@ export default function Home() {
   const [userInput, setUserInput] = useState('')
   const [assistantResponse, setAssistantResponse] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  function openModal() {
+    setIsModalOpen(true)
+  }
+
+  function closeModal() {
+    setIsModalOpen(false)
+  }
 
   async function askChat() {
     setIsLoading(true)
@@ -33,7 +43,7 @@ export default function Home() {
       <div className='mx-auto max-w-7xl px-6'>
         <div className='mx-auto max-w-2xl'>
           <h1 className='mt-2 mb-4 text-3xl font-bold tracking-tight'>
-            Nemesis Chat
+            Nemesis AI
           </h1>
 
           <div className='flex items-end my-8'>
@@ -66,6 +76,17 @@ export default function Home() {
           >
             {assistantResponse}
           </div>
+
+          <button onClick={openModal}>Open Modal</button>
+
+          <Modal
+            isOpen={isModalOpen}
+            onRequestClose={closeModal}
+            className='fixed top-20 left-3 right-3 bottom-20 max-w-3xl mx-auto p-20 bg-gray-700 rounded-lg bg-'
+            overlayClassName='fixed top-0 left-0 right-0 bottom-0 bg-grey-700/50'
+          >
+            <h2>Test h2 modal</h2>
+          </Modal>
         </div>
       </div>
     </div>

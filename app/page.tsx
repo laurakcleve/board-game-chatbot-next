@@ -1,49 +1,71 @@
-"use client"
+'use client'
 
-import { useState } from "react"
+import { useState } from 'react'
+import Image from 'next/image'
+import arrowsIcon from '../public/arrows.svg'
+import AutoResizeTextarea from './components/AutoResizeTextarea'
 
 export default function Home() {
-  const [userInput, setUserInput] = useState("")
-  const [assistantResponse, setAssistantResponse] = useState("")
+  const [userInput, setUserInput] = useState('')
+  const [assistantResponse, setAssistantResponse] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   async function askChat() {
+    setIsLoading(true)
     fetch('/api/chat', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(userInput)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userInput),
     }).then(async (res) => {
-      console.log(res)
+      setIsLoading(false)
       if (res.status === 200) {
         setAssistantResponse(await res.json())
       }
     })
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  function handleSubmit() {
     askChat()
   }
 
   return (
-    <div className="py-24">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="mt-2 mb-4 text-3xl font-bold tracking-tight">
+    <div className='py-24'>
+      <div className='mx-auto max-w-7xl px-6'>
+        <div className='mx-auto max-w-2xl'>
+          <h1 className='mt-2 mb-4 text-3xl font-bold tracking-tight'>
             Nemesis Chat
           </h1>
 
-          <form onSubmit={handleSubmit} className="flex my-8">
-            <input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} className="px-4 py-3 flex-1 rounded-md bg-transparent border-solid border-2 border-teal-400 outline-none" />
+          <div className='flex items-end my-8'>
+            <div className='px-4 pt-3 pb-2 flex-1 rounded-md bg-transparent border-solid border-2 border-teal-400 outline-none'>
+              <AutoResizeTextarea
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                handleSubmit={handleSubmit}
+                className='w-full m-0 p-0 border-0 focus:outline-0 bg-transparent resize-none'
+              />
+            </div>
 
-            <button type="submit">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-              </svg>
+            <button type='submit'>
+              <Image
+                src={arrowsIcon}
+                alt='submit'
+                className='w-12 ml-4 pb-2 fill-teal-400'
+              />
             </button>
-          </form>
+          </div>
 
-          <div className="whitespace-pre-line prose prose-invert">{assistantResponse}</div>
+          {isLoading && (
+            <div className='spinner absolute left-1/2 transform -translate-x-1/2' />
+          )}
 
+          <div
+            className={`whitespace-pre-line prose prose-invert ${
+              isLoading && 'opacity-30'
+            }`}
+          >
+            {assistantResponse}
+          </div>
         </div>
       </div>
     </div>

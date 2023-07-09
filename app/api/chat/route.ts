@@ -1,17 +1,7 @@
 import { Configuration, OpenAIApi, CreateChatCompletionRequest } from 'openai'
 import path from 'path'
 import { promises as fs } from 'fs'
-
-type IndexChunk = {
-  content: string
-  section_id: string
-  embedding: number[]
-}
-
-type Section = {
-  id: string
-  content: string
-}
+import { IndexChunk, Score, Section } from '@/app/types/chat'
 
 const config = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
@@ -37,7 +27,7 @@ export async function POST(req: Request) {
   })
   const userMessageEmbedding = userMessageEmbeddingResponse.data.data[0].embedding
 
-  const scores = index.map((chunk) => {
+  const scores: Score[] = index.map((chunk) => {
     const score = similarity(userMessageEmbedding, chunk.embedding)
     return {
       content: chunk.content,
@@ -53,9 +43,9 @@ export async function POST(req: Request) {
       acc.push(section.content)
     }
     return acc
-  }, <string[]>[]).slice(0, 3).join('\n\n---\n\n')
+  }, <string[]>[]).slice(0, 3)
 
-  const prompt = "Answer the following question given the provided context. First look at the heading of the relevant section from the context and assess whether it applies to the situation of the question, then reason through the logic of the rules before giving an answer. Your answer should be as accurate as possible, and should not include the details of the headings and sections, nor your steps of reasoning.\n\nContext:\n\n<<CONTEXT>>\n\n=== end of context ===\n\nQuestion: <<QUESTION>>".replace("<<CONTEXT>>", relevantSections).replace("<<QUESTION>>", userMessage)
+  const prompt = "Answer the following question given the provided context. First look at the heading of the relevant section from the context and assess whether it applies to the situation of the question, then reason through the logic of the rules before giving an answer. Your answer should be as accurate as possible, and should not include the details of the headings and sections, nor your steps of reasoning.\n\nContext:\n\n<<CONTEXT>>\n\n=== end of context ===\n\nQuestion: <<QUESTION>>".replace("<<CONTEXT>>", relevantSections.join('\n\n---\n\n')).replace("<<QUESTION>>", userMessage)
 
   const chatResponse = await openai.createChatCompletion({
     model: CHAT_MODEL,
@@ -71,7 +61,16 @@ export async function POST(req: Request) {
     ]
   })
 
-  return new Response(JSON.stringify(chatResponse.data.choices[0].message?.content))
+  const assistantResponse = chatResponse.data.choices[0].message?.content
+
+  const debugData = {
+    userMessage,
+    scores: scores.slice(0, 10), 
+    relevantSections,
+    prompt
+  }
+
+  return new Response(JSON.stringify({assistantResponse, debugData}))
 }
 
 function similarity(v1: number[], v2: number[]) {

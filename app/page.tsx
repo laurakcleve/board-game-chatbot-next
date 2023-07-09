@@ -5,11 +5,18 @@ import Image from 'next/image'
 import Modal from 'react-modal'
 import arrowsIcon from '../public/arrows.svg'
 import AutoResizeTextarea from './components/AutoResizeTextarea'
+import { ResponseData } from './types/chat'
+import DebuggingSection from './components/DebuggingSection'
 import SampleQuestion from './components/SampleQuestion'
+
+Modal.setAppElement('#main')
 
 export default function Home() {
   const [userInput, setUserInput] = useState('')
   const [assistantResponse, setAssistantResponse] = useState('')
+  const [debugData, setDebugData] = useState<
+    ResponseData['debugData'] | undefined
+  >()
   const [isLoading, setIsLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -37,7 +44,9 @@ export default function Home() {
     }).then(async (res) => {
       setIsLoading(false)
       if (res.status === 200) {
-        setAssistantResponse(await res.json())
+        const resJSON: ResponseData = await res.json()
+        setAssistantResponse(resJSON.assistantResponse)
+        setDebugData(resJSON.debugData)
       }
     })
   }
@@ -101,13 +110,62 @@ export default function Home() {
           </div>
         </div>
 
+        <div className='absolute bottom-6 w-full flex justify-center'>
+          <button
+            onClick={openModal}
+            className='flex items-center gap-2 uppercase text-xs'
+          >
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 22.27 10.19'
+              fill='none'
+              stroke='#ccc'
+              stroke-width='2'
+              className='w-4 pb-[1px]'
+            >
+              <path d='m21.56,9.49l-4.39-4.39L21.56.71' />
+              <path d='m13.48,9.49l-4.39-4.39L13.48.71' />
+              <path d='m5.39,9.49L1,5.1,5.39.71' />
+            </svg>
+            Debugging data
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 22.27 10.19'
+              fill='none'
+              stroke='#ccc'
+              stroke-width='2'
+              className='w-4 pb-[1px]'
+            >
+              <path d='m.71.71l4.39,4.39L.71,9.49' />
+              <path d='m8.79.71l4.39,4.39-4.39,4.39' />
+              <path d='m16.88.71l4.39,4.39-4.39,4.39' />
+            </svg>
+          </button>
+        </div>
+
           <Modal
             isOpen={isModalOpen}
             onRequestClose={closeModal}
-            className='fixed top-20 left-3 right-3 bottom-20 max-w-3xl mx-auto p-20 bg-gray-700 rounded-lg bg-'
+          className='fixed top-20 left-3 right-3 bottom-20 max-w-3xl mx-auto p-10 bg-gray-700 rounded-lg overflow-y-scroll'
             overlayClassName='fixed top-0 left-0 right-0 bottom-0 bg-grey-700/50'
           >
-            <h2>Test h2 modal</h2>
+          {debugData && (
+            <>
+              <DebuggingSection
+                heading='Question'
+                content={debugData.userMessage}
+              />
+              <DebuggingSection heading='Scores' content={debugData.scores} />
+              <DebuggingSection
+                heading='Sections'
+                content={debugData.relevantSections}
+              />
+              <DebuggingSection
+                heading='Final prompt'
+                content={debugData.prompt}
+              />
+            </>
+          )}
           </Modal>
         </div>
       </div>

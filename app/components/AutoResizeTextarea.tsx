@@ -33,6 +33,7 @@ export default function AutoResizeTextarea({
   return (
     <textarea
       {...props}
+      value={value}
       rows={1}
       ref={textareaRef}
       onChange={onChange}

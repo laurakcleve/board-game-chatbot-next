@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import Modal from 'react-modal'
-import arrowsIcon from '../public/arrows.svg'
+import CornerSVG from '../public/corner.svg'
+import SubmitSVG from '../public/submit.svg'
+import ArrowsLeftSVG from '../public/arrowsLeft.svg'
+import ArrowsRightSVG from '../public/arrowsRight.svg'
 import AutoResizeTextarea from './components/AutoResizeTextarea'
 import { ResponseData } from './types/chat'
 import DebuggingSection from './components/DebuggingSection'
@@ -57,17 +59,7 @@ export default function Home() {
 
   return (
     <>
-      <svg
-        xmlns='http://www.w3.org/2000/svg'
-        viewBox='0 0 104.55 169.07'
-        className='absolute p-1 w-32 md:w-52 fill-blue-dark'
-      >
-        <polygon points='104.55 4.22 88.36 4.22 80.51 12.11 70.29 12.11 68.84 9.6 46.54 9.6 45.09 12.11 34.87 12.11 27.02 4.22 10.83 4.22 15.03 0 31.28 0 36.92 5.67 52.28 5.67 53.51 7.81 61.87 7.81 63.1 5.67 78.46 5.67 84.1 0 100.35 0 104.55 4.22' />
-        <polygon points='11.99 7.88 11.99 9.81 7.32 13.88 7.32 18.77 5.35 20.49 5.35 164.41 0 169.07 0 154.62 2.68 152.29 2.68 62.62 0 60.29 0 18.32 .97 17.48 11.99 7.88' />
-        <polygon points='13.72 27.35 13.72 48.36 12.57 49.36 12.57 83.22 10.83 84.73 10.83 28.26 10.02 27.33 10.02 25.06 7.06 21.64 8.77 21.64 13.72 27.35' />
-        <polygon points='10.12 33.25 10.12 35.09 7.24 31.75 6.22 30.56 6.22 23.57 7.24 24.75 7.24 29.9 10.12 33.25' />
-      </svg>
-
+      <CornerSVG className='absolute p-1 w-32 md:w-52 fill-blue-dark' />
       <div className='relative pt-24 px-6 mx-auto max-w-2xl h-screen' id='main'>
         <h1 className='mb-4 text-3xl font-bold tracking-tight [text-shadow:0_0_16px_#0d93cd]'>
           Nemesis AI
@@ -84,7 +76,7 @@ export default function Home() {
           </div>
 
           <button type='submit'>
-            <Image src={arrowsIcon} alt='submit' className='w-12 ml-4 pb-2' />
+            <SubmitSVG className='w-12 ml-4 pb-2' />
           </button>
         </div>
 
@@ -121,31 +113,9 @@ export default function Home() {
             onClick={openModal}
             className='flex items-center gap-2 uppercase text-xs'
           >
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 22.27 10.19'
-              fill='none'
-              stroke='#ccc'
-              stroke-width='2'
-              className='w-4 pb-[1px]'
-            >
-              <path d='m21.56,9.49l-4.39-4.39L21.56.71' />
-              <path d='m13.48,9.49l-4.39-4.39L13.48.71' />
-              <path d='m5.39,9.49L1,5.1,5.39.71' />
-            </svg>
+            <ArrowsLeftSVG className='w-4 pb-[1px]' />
             Debugging data
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 22.27 10.19'
-              fill='none'
-              stroke='#ccc'
-              stroke-width='2'
-              className='w-4 pb-[1px]'
-            >
-              <path d='m.71.71l4.39,4.39L.71,9.49' />
-              <path d='m8.79.71l4.39,4.39-4.39,4.39' />
-              <path d='m16.88.71l4.39,4.39-4.39,4.39' />
-            </svg>
+            <ArrowsRightSVG className='w-4 pb-[1px]' />
           </button>
         </div>
 

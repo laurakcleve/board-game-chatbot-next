@@ -5,12 +5,20 @@ import Image from 'next/image'
 import Modal from 'react-modal'
 import arrowsIcon from '../public/arrows.svg'
 import AutoResizeTextarea from './components/AutoResizeTextarea'
+import SampleQuestion from './components/SampleQuestion'
 
 export default function Home() {
   const [userInput, setUserInput] = useState('')
   const [assistantResponse, setAssistantResponse] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const sampleQuestions = [
+    'What is this game like?',
+    'How do you search a white room?',
+    'What happens when you roll danger on a noise roll?',
+    'How do you stop the self destruct sequence?',
+  ]
 
   function openModal() {
     setIsModalOpen(true)
@@ -20,12 +28,12 @@ export default function Home() {
     setIsModalOpen(false)
   }
 
-  async function askChat() {
+  async function askChat(question: string) {
     setIsLoading(true)
     fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userInput),
+      body: JSON.stringify(question),
     }).then(async (res) => {
       setIsLoading(false)
       if (res.status === 200) {
@@ -35,7 +43,7 @@ export default function Home() {
   }
 
   function handleSubmit() {
-    askChat()
+    askChat(userInput)
   }
 
   return (
@@ -77,7 +85,21 @@ export default function Home() {
             {assistantResponse}
           </div>
 
-          <button onClick={openModal}>Open Modal</button>
+        <div className='mt-20'>
+          <h2 className='mb-4'>Sample questions:</h2>
+          <div className='flex flex-wrap justify-start gap-4'>
+            {sampleQuestions.map((q) => (
+              <SampleQuestion
+                key={q}
+                question={q}
+                onClick={() => {
+                  setUserInput(q)
+                  askChat(q)
+                }}
+              />
+            ))}
+          </div>
+        </div>
 
           <Modal
             isOpen={isModalOpen}

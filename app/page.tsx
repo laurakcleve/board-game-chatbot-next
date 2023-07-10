@@ -6,6 +6,7 @@ import CornerSVG from '../public/corner.svg'
 import SubmitSVG from '../public/submit.svg'
 import ArrowsLeftSVG from '../public/arrowsLeft.svg'
 import ArrowsRightSVG from '../public/arrowsRight.svg'
+import WarningSVG from '../public/warning.svg'
 import AutoResizeTextarea from './components/AutoResizeTextarea'
 import { ResponseData } from './types/chat'
 import DebuggingSection from './components/DebuggingSection'
@@ -20,6 +21,7 @@ export default function Home() {
     ResponseData['debugData'] | undefined
   >()
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const sampleQuestions = [
@@ -50,10 +52,15 @@ export default function Home() {
         setAssistantResponse(resJSON.assistantResponse)
         setDebugData(resJSON.debugData)
       }
+      if (res.status === 500) {
+        const resJSON = await res.json()
+        setError(resJSON.error)
+      }
     })
   }
 
   function handleSubmit() {
+    if (!userInput) return
     askChat(userInput)
   }
 
@@ -75,10 +82,23 @@ export default function Home() {
             />
           </div>
 
-          <button type='submit'>
+          <button
+            type='submit'
+            onClick={() => askChat(userInput)}
+            disabled={!userInput.length}
+            className='disabled:fill-gray-600 fill-blue focus:outline-none'
+          >
             <SubmitSVG className='w-12 ml-4 pb-2' />
           </button>
         </div>
+
+        {error && (
+          <div className='flex justify-center gap-3'>
+            <WarningSVG className='w-6 fill-red-500' />
+            <div className='uppercase text-red-500'>Error:</div>
+            <div>{error}</div>
+          </div>
+        )}
 
         {isLoading && (
           <div className='spinner absolute left-1/2 transform -translate-x-1/2' />

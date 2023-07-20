@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Modal from 'react-modal'
-import CornerSVG from '../public/corner.svg'
+import BorderLeftSVG from '../public/borderLeft.svg'
+import BorderRightSVG from '../public/borderRight.svg'
 import SubmitSVG from '../public/submit.svg'
 import ArrowsLeftSVG from '../public/arrowsLeft.svg'
 import ArrowsRightSVG from '../public/arrowsRight.svg'
@@ -51,6 +52,7 @@ export default function Home() {
         const resJSON: ResponseData = await res.json()
         setAssistantResponse(resJSON.assistantResponse)
         setDebugData(resJSON.debugData)
+        setError('')
       }
       if (res.status === 500) {
         const resJSON = await res.json()
@@ -65,70 +67,77 @@ export default function Home() {
   }
 
   return (
-    <>
-      <CornerSVG className='absolute p-1 w-32 md:w-52 fill-blue-dark' />
-      <div className='relative pt-24 px-6 mx-auto max-w-2xl h-screen' id='main'>
-        <h1 className='mb-4 text-3xl font-bold tracking-tight [text-shadow:0_0_16px_#0d93cd]'>
-          Nemesis AI
-        </h1>
+    <div className='relative h-full'>
+      <BorderLeftSVG className='absolute p-1 w-32 md:w-52 fill-blue-dark' />
+      <div
+        className='pt-24 px-6 mx-auto max-w-2xl min-h-screen flex flex-col justify-between'
+        id='main'
+      >
+        <div>
+          <h1 className='mb-4 text-3xl font-bold tracking-tight [text-shadow:0_0_16px_#0d93cd]'>
+            Nemesis AI
+          </h1>
 
-        <div className='flex items-end my-8'>
-          <div className='px-4 pt-3 pb-2 flex-1 rounded-md bg-transparent border-solid border border-blue outline-none'>
-            <AutoResizeTextarea
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              handleSubmit={handleSubmit}
-              className='w-full m-0 p-0 border-0 focus:outline-0 bg-transparent resize-none'
-            />
-          </div>
-
-          <button
-            type='submit'
-            onClick={() => askChat(userInput)}
-            disabled={!userInput.length}
-            className='disabled:fill-gray-600 fill-blue focus:outline-none'
-          >
-            <SubmitSVG className='w-12 ml-4 pb-2' />
-          </button>
-        </div>
-
-        {error && (
-          <div className='flex justify-center gap-3'>
-            <WarningSVG className='w-6 fill-red-500' />
-            <div className='uppercase text-red-500'>Error:</div>
-            <div>{error}</div>
-          </div>
-        )}
-
-        {isLoading && (
-          <div className='spinner absolute left-1/2 transform -translate-x-1/2' />
-        )}
-
-        <div
-          className={`whitespace-pre-line prose prose-invert ${
-            isLoading && 'opacity-30'
-          }`}
-        >
-          {assistantResponse}
-        </div>
-
-        <div className='mt-20'>
-          <h2 className='mb-4'>Sample questions:</h2>
-          <div className='flex flex-wrap justify-start gap-4'>
-            {sampleQuestions.map((q) => (
-              <SampleQuestion
-                key={q}
-                question={q}
-                onClick={() => {
-                  setUserInput(q)
-                  askChat(q)
-                }}
+          <div className='flex items-end my-8'>
+            <div className='px-4 pt-3 pb-2 flex-1 rounded-md bg-transparent border border-blue outline-none'>
+              <AutoResizeTextarea
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                handleSubmit={handleSubmit}
+                className='w-full m-0 p-0 border-0 focus:outline-0 bg-transparent resize-none'
               />
-            ))}
+            </div>
+
+            <button
+              type='submit'
+              onClick={() => askChat(userInput)}
+              disabled={!userInput.length}
+              className='disabled:fill-gray-600 fill-blue focus:outline-none'
+            >
+              <SubmitSVG className='w-12 ml-4 pb-2' />
+            </button>
+          </div>
+
+          {error && (
+            <div className={`flex items-start ${isLoading && 'opacity-30'}`}>
+              <WarningSVG className='shrink-0 w-6 mr-2 pt-[2px] fill-red-500' />
+              <div>
+                <span className='mr-2 uppercase text-red-500'>Error:</span>
+                <span>{error}</span>
+              </div>
+            </div>
+          )}
+
+          {isLoading && (
+            <div className='spinner absolute left-1/2 transform -translate-x-1/2' />
+          )}
+
+          <div
+            className={`whitespace-pre-line prose prose-invert ${
+              isLoading && 'opacity-30'
+            }`}
+          >
+            {assistantResponse}
+          </div>
+
+          <div className='mt-20'>
+            <h2 className='mb-4'>Sample questions:</h2>
+            <div className='flex flex-wrap justify-start gap-4'>
+              {sampleQuestions.map((q) => (
+                <SampleQuestion
+                  key={q}
+                  question={q}
+                  onClick={() => {
+                    setUserInput(q)
+                    askChat(q)
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className='absolute bottom-6 w-full flex justify-center'>
+        <div className='w-full flex justify-center pb-6 mt-16'>
           <button
             onClick={openModal}
             className='flex items-center gap-2 uppercase text-xs'
@@ -164,6 +173,7 @@ export default function Home() {
           )}
         </Modal>
       </div>
-    </>
+      <BorderRightSVG className='absolute bottom-1 right-1 w-8 fill-blue-dark' />
+    </div>
   )
 }

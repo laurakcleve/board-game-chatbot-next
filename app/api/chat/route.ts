@@ -10,6 +10,8 @@ const openai = new OpenAIApi(config)
 
 const EMBEDDING_MODEL = 'text-embedding-ada-002'
 const CHAT_MODEL = 'gpt-3.5-turbo'
+
+export const runtime = 'edge'
  
 export async function POST(req: Request) {
   const dataDirectory = path.join(process.cwd(), 'data')

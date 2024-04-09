@@ -1,6 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai'
-import path from 'path'
-import { promises as fs } from 'fs'
+import indexData from '../../../data/index.json'
+import sectionsData from '../../../data/sections.json'
 import { IndexChunk, Score, Section } from '@/app/types/chat'
 
 const config = new Configuration({
@@ -10,28 +10,11 @@ const openai = new OpenAIApi(config)
 
 const EMBEDDING_MODEL = 'text-embedding-ada-002'
 const CHAT_MODEL = 'gpt-3.5-turbo'
- 
+
 export async function POST(req: Request) {
-  const dataDirectory = path.join(process.cwd(), 'data')
-  let index: IndexChunk[]
-  let sections: Section[]
+  const index: IndexChunk[] = indexData as IndexChunk[]
+  const sections: Section[] = sectionsData as Section[]
 
-  try {
-    const indexFile = await fs.readFile(dataDirectory + '/index.json', 'utf8')
-    index = JSON.parse(indexFile)
-  } catch (error) {
-    console.error('Error reading or parsing index.json:', error);
-    return new Response(JSON.stringify({ error: 'Failed to read or parse index.json' }), { status: 500 })
-  }
-
-  try {
-    const sectionsFile = await fs.readFile(dataDirectory + '/sections.json', 'utf8')
-    sections = JSON.parse(sectionsFile)
-  } catch (error) {
-    console.error('Error reading or parsing sections.json:', error);
-    return new Response(JSON.stringify({ error: 'Failed to read or parse sections.json' }), { status: 500 })
-  }
-  
   const userMessage = await req.json()
 
   let userMessageEmbedding: number[]

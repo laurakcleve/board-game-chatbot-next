@@ -137,16 +137,18 @@ export default function Home() {
           </div>
         </div>
 
-        <div className='w-full flex justify-center pb-6 mt-16'>
-          <button
-            onClick={openModal}
-            className='flex items-center gap-2 uppercase text-xs'
-          >
-            <ArrowsLeftSVG className='w-4 pb-[1px]' />
-            Debugging data
-            <ArrowsRightSVG className='w-4 pb-[1px]' />
-          </button>
-        </div>
+        {debugData && (
+          <div className='w-full flex justify-center pb-6 mt-16'>
+            <button
+              onClick={openModal}
+              className='flex items-center gap-2 uppercase text-xs'
+            >
+              <ArrowsLeftSVG className='w-4 pb-[1px]' />
+              Debugging data
+              <ArrowsRightSVG className='w-4 pb-[1px]' />
+            </button>
+          </div>
+        )}
 
         <Modal
           isOpen={isModalOpen}

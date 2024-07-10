@@ -3,9 +3,7 @@ import indexData from '../../../data/index.json'
 import sectionsData from '../../../data/sections.json'
 import { IndexChunk, Score, Section } from '@/app/types/chat'
 
-export const config = {
-  maxDuration: 60
-}
+export const maxDuration = 60
 
 const openAiConfig = new Configuration({
   apiKey: process.env.OPENAI_API_KEY

@@ -22,5 +22,6 @@ export type ResponseData = {
     scores: Score[]
     relevantSections: string[]
     prompt: string
+    model: string
   }
 }

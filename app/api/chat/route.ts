@@ -81,7 +81,8 @@ export async function POST(req: Request) {
     userMessage,
     scores: scores.slice(0, 10), 
     relevantSections,
-    prompt
+    prompt,
+    model: CHAT_MODEL
   }
 
   return new Response(JSON.stringify({assistantResponse, debugData}))

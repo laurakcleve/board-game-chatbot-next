@@ -159,6 +159,10 @@ export default function Home() {
           {debugData && (
             <>
               <DebuggingSection
+                heading='Model'
+                content={debugData.model}
+              />
+              <DebuggingSection
                 heading='Question'
                 content={debugData.userMessage}
               />

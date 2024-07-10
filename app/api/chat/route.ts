@@ -3,10 +3,14 @@ import indexData from '../../../data/index.json'
 import sectionsData from '../../../data/sections.json'
 import { IndexChunk, Score, Section } from '@/app/types/chat'
 
-const config = new Configuration({
+export const config = {
+  maxDuration: 60
+}
+
+const openAiConfig = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
 })
-const openai = new OpenAIApi(config)
+const openai = new OpenAIApi(openAiConfig)
 
 const EMBEDDING_MODEL = 'text-embedding-ada-002'
 const CHAT_MODEL = process.env.OPENAI_MODEL

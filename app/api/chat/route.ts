@@ -9,7 +9,7 @@ const config = new Configuration({
 const openai = new OpenAIApi(config)
 
 const EMBEDDING_MODEL = 'text-embedding-ada-002'
-const CHAT_MODEL = 'gpt-3.5-turbo'
+const CHAT_MODEL = process.env.OPENAI_MODEL
 
 export async function POST(req: Request) {
   const index: IndexChunk[] = indexData as IndexChunk[]
@@ -50,6 +50,13 @@ export async function POST(req: Request) {
   const prompt = "Answer the following question given the provided context. First look at the heading of the relevant section from the context and assess whether it applies to the situation of the question, then reason through the logic of the rules before giving an answer. Your answer should be as accurate as possible, and should not include the details of the headings and sections, nor your steps of reasoning. If the answer cannot be found in the context, respond that you could not find the answer, without mentioning the context.\n\nContext:\n\n<<CONTEXT>>\n\n=== end of context ===\n\nQuestion: <<QUESTION>>".replace("<<CONTEXT>>", relevantSections.join('\n\n---\n\n')).replace("<<QUESTION>>", userMessage)
 
   let assistantResponse
+
+  if (!CHAT_MODEL) {
+    return new Response(JSON.stringify({ error: 'Chat model not specified' }), {
+      status: 500,
+    })
+  }
+
   try {
     const chatResponse = await openai.createChatCompletion({
       model: CHAT_MODEL,
